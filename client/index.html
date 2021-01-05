@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Upload</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
+  </head>
+
+  <body>
+    <div id="app">
+      <input type="file" @change="handleFileChange" />
+      <el-button @click="handleUpload" :disabled="uploadDisabled"
+        >上传</el-button
+      >
+      <el-button @click="handleResume" v-if="status === Status.pause"
+        >恢复</el-button
+      >
+      <el-button
+        v-else
+        :disabled="status !== Status.uploading || !container.hash"
+        @click="handlePause"
+        >暂停</el-button
+      >
+
+      <div>
+        <div>计算文件 hash</div>
+        <el-progress :percentage="hashPercentage"></el-progress>
+        <div>总进度</div>
+        <el-progress :percentage="fakeUploadPercentage"></el-progress>
+      </div>
+
+      <el-table :data="list">
+        <el-table-column
+          prop="hash"
+          label="切片hash"
+          align="center"
+        ></el-table-column>
+        <el-table-column label="大小(KB)" align="center" width="120">
+          <template v-slot="{ row }"> {{ row.size | transformByte }} </template>
+        </el-table-column>
+        <el-table-column label="进度" align="center">
+          <template v-slot="{ row }">
+            <el-progress
+              :percentage="row.percentage"
+              color="#909399"
+            ></el-progress>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.12/vue.min.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
